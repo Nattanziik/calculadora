@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1f1f1f, #2c2c2c);
+  }
+
+  .calculator {
+    width: 300px;
+    padding: 15px;
+    border-radius: 20px;
+    background: #2d2d2d;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+  }
+
+  .display {
+    background: #111;
+    color: white;
+    font-size: 2em;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: right;
+    margin-bottom: 10px;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  button {
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+    background: #3a3a3a;
+    color: white;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background: #505050;
+  }
+
+  .op { background: #444; }
+  .equal { background: #6fa8dc; color: black; }
+  .equal:hover { background: #8cc0f0; }
+
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+  <div id="display" class="display">0</div>
+
+  <div class="buttons">
+    <!-- Linha 1 -->
+    <button onclick="percent()">%</button>
+    <button onclick="clearEntry()">CE</button>
+    <button onclick="clearAll()">C</button>
+    <button onclick="backspace()">⌫</button>
+
+    <!-- Linha 2 -->
+    <button onclick="oneOver()">1/x</button>
+    <button onclick="square()">x²</button>
+    <button onclick="sqrt()">√x</button>
+    <button class="op" onclick="chooseOp('/')">÷</button>
+
+    <!-- Linha 3 -->
+    <button onclick="append(7)">7</button>
+    <button onclick="append(8)">8</button>
+    <button onclick="append(9)">9</button>
+    <button class="op" onclick="chooseOp('*')">×</button>
+
+    <!-- Linha 4 -->
+    <button onclick="append(4)">4</button>
+    <button onclick="append(5)">5</button>
+    <button onclick="append(6)">6</button>
+    <button class="op" onclick="chooseOp('-')">−</button>
+
+    <!-- Linha 5 -->
+    <button onclick="append(1)">1</button>
+    <button onclick="append(2)">2</button>
+    <button onclick="append(3)">3</button>
+    <button class="op" onclick="chooseOp('+')">+</button>
+
+    <!-- Linha 6 -->
+    <button onclick="plusMinus()">±</button>
+    <button onclick="append(0)">0</button>
+    <button onclick="append('.')">,</button>
+    <button class="equal" onclick="calculate()">=</button>
+  </div>
+</div>
+
+<script>
+  let current = "";
+  let previous = "";
+  let operator = null;
+
+  const display = document.getElementById("display");
+
+  function update() {
+    display.innerText = current || "0";
+  }
+
+  function append(num) {
+    if (num === "." && current.includes(".")) return;
+    current += num;
+    update();
+  }
+
+  function chooseOp(op) {
+    if (current === "") return;
+    previous = current;
+    current = "";
+    operator = op;
+  }
+
+  function calculate() {
+    const prev = parseFloat(previous);
+    const curr = parseFloat(current);
+
+    if (isNaN(prev) || isNaN(curr)) return;
+
+    let result;
+    switch (operator) {
+      case "+": result = prev + curr; break;
+      case "-": result = prev - curr; break;
+      case "*": result = prev * curr; break;
+      case "/": result = curr === 0 ? "Erro" : prev / curr; break;
+    }
+
+    current = result.toString();
+    operator = null;
+    previous = "";
+    update();
+  }
+
+  function clearAll() {
+    current = "";
+    previous = "";
+    operator = null;
+    update();
+  }
+
+  function clearEntry() {
+    current = "";
+    update();
+  }
+
+  function backspace() {
+    current = current.slice(0, -1);
+    update();
+  }
+
+  function plusMinus() {
+    current = current ? (parseFloat(current) * -1).toString() : "";
+    update();
+  }
+
+  function percent() {
+    current = (parseFloat(current) / 100).toString();
+    update();
+  }
+
+  function square() {
+    current = Math.pow(parseFloat(current), 2).toString();
+    update();
+  }
+
+  function sqrt() {
+    current = Math.sqrt(parseFloat(current)).toString();
+    update();
+  }
+
+  function oneOver() {
+    current = (1 / parseFloat(current)).toString();
+    update();
+  }
+
+  update();
+</script>
+
+</body>
+</html>
